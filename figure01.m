@@ -1,4 +1,4 @@
 function figure01
-% A world map
+% A world map the SACV station, plate boundaries, and continents
 %
-% ast modified by ..  on ...
+% last modified by aamatya  on 9/8/20

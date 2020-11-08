@@ -1,4 +1,4 @@
 function figure02
-% A 
+% A histogram of earthquake magnitude (subplot 1), earthquake depth (subplot 2) 
 %
-% ast modified by ..  on ...
+% last modified by aamatya  on 9/8/20

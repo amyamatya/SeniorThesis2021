@@ -1,5 +1,7 @@
 %% 1 - Histogram of magnitudes
-% Skip to Section 2 if ran startup.m
+% Last modified 11/12/2020 by aamatya@princeton.edu
+
+% (Skip to Section 2 if ran startup.m)
 % Get station info (Network II, Location 00, BH)
 s1 = irisFetch.Stations('CHANNEL','II','SACV','00','BH*'); 
 s1la = s1.Channels(1).Latitude;
@@ -55,12 +57,17 @@ magTypes = magTypes(id);
 %%
 % Make histogram, donut color coded
 close all
-figure(2)
-subplot(2,1,1)
-% histogram([allQuakes.mag], 14, 'binedges',3:.5:9);
 allCounts = histcounts(allQuakes.mag, 3:.5:9);
 donutCounts1 = histcounts(donutQuakes1.mag, 3:.5:9);
 donutCounts2 = histcounts(donutQuakes2.mag, 3:.5:9);
+figure(2)
+subplot(3,1,1)
+histfit(donutQuakes2.mag);
+% set(gca,'Xticklabel',[]);
+axis tight;
+legend('Donut data from 11/10/17');
+subplot(3,1,2)
+% histogram([allQuakes.mag], 14, 'binedges',3:.5:9);
 bar(1:length(allCounts), [allCounts; donutCounts2]','histc');
 axis tight
 title('Frequency of Earthquake Magnitudes');
@@ -68,7 +75,7 @@ set(gca,'xticklabel',[]);
 legend('All data from 11/10/17','Donut data from 11/10/17');
 hold off
 
-subplot(2,1,2)
+subplot(3,1,3)
 bar(1:length(allCounts), [allCounts; donutCounts2]','histc');
 ph = get(gca,'children');
 for i = 1:length(ph)
@@ -93,5 +100,3 @@ print(figure(2), '/Users/aamatya/Desktop/Thesis/Figures/figure02','-dpdf');
 
 % Clean workspace
 % clearvars -except ev filename land levels quakes shorelines
-
-% peepee poopoo 

@@ -1,5 +1,5 @@
-% startup.m
-% Last modified 11/04/2020 by aamatya@princeton.edu
+%% Let's get it started!
+% Last modified 11/12/2020 by aamatya@princeton.edu
 cd('/Users/aamatya/Documents/MATLAB/ST2021/scripts');
 % Path to MFILES
 addpath /Users/aamatya/Desktop/Thesis/MFILES/irisFetch-matlab-2.0.11

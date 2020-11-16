@@ -11,5 +11,7 @@ addpath('/Users/aamatya/Desktop/OpenSourceFunctions');
 addpath('/Users/aamatya/Desktop/OpenSourceFunctions/read_kml');
 addpath('/Users/aamatya/Desktop/Thesis/plate-boundaries');
 addpath('/Users/aamatya/Desktop/OpenSourceFunctions/suplabel');
-% Load events
+addpath('/Users/aamatya/Desktop/OpenSourceFunctions/grdread2');
+% Load large data
 load('events.mat');
+load('topography.mat');

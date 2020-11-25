@@ -1,7 +1,7 @@
 %% figure01: Map of geographic/tectonic context
 % Last modified 11/15/2020 by aamatya@princeton.edu
 %% 1 - Load, reconfigure, save topographic relief data
-% Skip to section 2 if ran startup.m
+% (Skip to section 2)
 % Data: ETOPO1 Ice Surface from https://www.ngdc.noaa.gov/mgg/global/global.html
 [topoxOld, topoyOld, topozOld] = grdread2('ETOPO1_Ice_g_gdal.grd');
 [lats, lons] = size(topozOld);
@@ -9,15 +9,18 @@ topoxOld = convertLon(topoxOld, '-180to360');
 topox = repmat(topoxOld, lats, 1);
 topoy = repmat(topoyOld', 1, lons);
 topox = topox(:); topoy = topoy(:); topoz = double(topozOld(:));
+save('topoData','topox','topoy','topoz');
 clear topoxOld topoyOld topozOld lats lons
 %% 2 - Load other geographic data
+% Load topoData.mat
+% load topo60c
+load('topoData.mat');
 % Load shorelines
 filename = gunzip('gshhs_c.b.gz', tempdir);
 shorelines = gshhs(filename{1});
 delete(filename{1})
 levels = [shorelines.Level];
 land = (levels == 1);  
-% load topo60c
 % Load and filter plate boundaries
 [pbxOld, pby, pbz] = read_kml('plate-boundaries.kml');
 errs = find(pbz ~= 0);
@@ -51,4 +54,4 @@ axis image
 % print(figure(1), '/Users/aamatya/Desktop/Thesis/Figures/figure01','-dpdf');
 
 % Clean workspace
-% test push
+% clearvars -except filename land levels shorelines sacvLat sacvLon

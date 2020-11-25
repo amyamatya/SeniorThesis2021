@@ -1,5 +1,5 @@
 %% Scaled map
-% Last modified 11/12/2020 by aamatya@princeton.edu
+% Last modified 11/15/2020 by aamatya@princeton.edu
 
 % Run figure01 and figure02 first
 % Indices of nonzero depth
@@ -23,8 +23,8 @@ sc1 = scatterm(allQuakes.lat(allDepthid), allQuakes.lon(allDepthid), allQuakes.m
 sc2 = scatterm(donutQuakes2.lat(donutDepthid2), donutQuakes2.lon(donutDepthid2), donutQuakes2.mag(donutDepthid2),'co','linewidth',0.001);
 scatterm(14.97, convertLon(-23.608, '-180to360'), 20, 'filled','ro');
 setm(ax,'mlabelparallel',-90);
-legend([sc1 sc2],'All quakes','Donut quakes','Location','southeast');
-title('Quakes by Magnitude');
+legend([sc1 sc2],'All quakes','Filtered quakes','Location','southeast');
+title('Events by Magnitude');
 xlabel('Latitude');
 ylabel('Longitude');
 hold off
@@ -40,7 +40,7 @@ sc1 = scatterm(allQuakes.lat(allDepthid), allQuakes.lon(allDepthid), allQuakes.d
 sc2 = scatterm(donutQuakes2.lat(donutDepthid2), donutQuakes2.lon(donutDepthid2), donutQuakes2.depth(donutDepthid2),'co','linewidth',0.001);
 scatterm(14.97, convertLon(-23.608, '-180to360'), 20, 'filled','ro');
 setm(ax,'mlabelparallel',-90);
-title('Quakes by Depth');
+title('Events by Depth');
 xlabel('Latitude');
 ylabel('Longitude');
 hold off

@@ -1,8 +1,7 @@
 %% 1 - Histogram of magnitudes
-% Last modified 11/12/2020 by aamatya@princeton.edu
-
-% (Skip to Section 2 if ran startup.m)
-% Get station info (Network II, Location 00, BH)
+% Last modified 11/15/2020 by aamatya@princeton.edu
+%% Get and store events (Network II, Location 00, BH)
+% (Skip to Section 2)
 s1 = irisFetch.Stations('CHANNEL','II','SACV','00','BH*'); 
 s1la = s1.Channels(1).Latitude;
 s1lo = s1.Channels(1).Longitude;
@@ -19,6 +18,7 @@ ev2All = irisFetch.Events('MinimumMagnitude',minMag,'MaximumMagnitude', maxMag,'
 ev2Donut = irisFetch.Events('MinimumMagnitude',minMag,'MaximumMagnitude', maxMag,...
     'radialcoordinates',donut, 'startTime',t2);
 %% 2 - Store quake info
+load eventData.mat;
 % Donut events from 1/14/13
 donutQuakes1.mag = [ev1Donut.PreferredMagnitudeValue]';
 donutQuakes1.lat = [ev1Donut.PreferredLatitude]';
@@ -62,17 +62,17 @@ donutCounts1 = histcounts(donutQuakes1.mag, 3:.5:9);
 donutCounts2 = histcounts(donutQuakes2.mag, 3:.5:9);
 figure(2)
 subplot(3,1,1)
-histfit(donutQuakes2.mag);
+histfit(donutQuakes2.mag,14);
+title('Frequency and fit of earthquake magnitudes, filtered from 1/14/13');
 % set(gca,'Xticklabel',[]);
 axis tight;
-legend('Donut data from 11/10/17');
 subplot(3,1,2)
 % histogram([allQuakes.mag], 14, 'binedges',3:.5:9);
 bar(1:length(allCounts), [allCounts; donutCounts2]','histc');
 axis tight
 title('Frequency of Earthquake Magnitudes');
 set(gca,'xticklabel',[]);
-legend('All data from 11/10/17','Donut data from 11/10/17');
+legend('All data from 11/10/17','Filtered data from 11/10/17','Location','southeast');
 hold off
 
 subplot(3,1,3)

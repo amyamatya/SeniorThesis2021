@@ -10,8 +10,8 @@ ids1 = find(donutQuakes2.mag > 7);
 ids = randsample(ids1, 1);
 % stationtraces
 for i = 1:length(ids)
-    eventCords = [donutQuakes2.lat(ids) donutQuakes2.lon(ids)];
-    %     convert time
+    eventCords = [donutQuakes2.lat(ids) convertLon(donutQuakes2.lon(ids), '360to-180')];
+    
     startTime = donutQuakes2.time{ids(i)};
     endTime = datetime(startTime) + minutes(30);
     endTime = datestr(endTime, 'yyyy-mm-dd HH:MM:SS.FFF');

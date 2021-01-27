@@ -1,48 +1,64 @@
-function [plop] = sacplot3(rad, trans, vert, startT, endT, pArriv, sArriv)
+function [tittle] = sacplot3(rad, trans, vert, startT, endT, pArriv, sArriv)
 % 3 component plot of given sacfile with labeled arrival
-% last edit 12/29 aamatya
+% last edit 1/13/21 aamatya
 
-plop = figure;
-% plot radial component
-subplot(3,1,1)
-hold on
+% store data, find limits
+t1 = datevec(startT,'yyyy-mm-ddTHH:MM:SS');
+t2 = datevec(endT,'yyyy-mm-ddTHH:MM:SS');
+elapTime = etime(t2, t1);
 [rad, ~, ~, ~, tims] = readsac(rad);
+[trans, ~, ~, ~, ~] = readsac(trans);
+[vert, ~, ~, ~, ~] = readsac(vert);
+yMin = min(min([rad trans vert]));
+yMax = max(max([rad trans vert]));
+
+% plot radial component
+ah(1) = subplot(3,1,1);
+hold on
 duration = eIristime(startT, endT);
-plot(tims, rad,'Color',[.5 .5 .5]);
+plot(tims, rad,'Color',[.1+(1/4) .1+(1/4) .1+(1/4)]);
+% plot(tims, rad);
 set(gca, 'xticklabel',[]);
-title('Radial');
+ylabel('Radial');
+box on
 axis tight
+ylim([yMin yMax]);
 hold off
 % plot transverse component
-subplot(3,1,2)
+ah(2) = subplot(3,1,2);
 hold on
-[trans, ~, ~, ~, tims] = readsac(trans);
-plot(tims, trans,'Color',[.5 .5 .5]);
+plot(tims, trans,'Color',[.1+(2/4) .1+(2/4) .1+(2/4)]);
+% plot(tims, trans);
 set(gca, 'xticklabel',[]);
-title('Transverse');
+ylabel('Transverse');
+box on
 axis tight
+ylim([yMin yMax]);
 hold off
 % plot vertical component
-subplot(3,1,3)
+ah(3) = subplot(3,1,3);
 hold on
-[vert, ~, ~, ~, tims] = readsac(vert);
-plot(tims, vert,'Color',[.5 .5 .5]);
-title('Vertical');
+plot(tims, vert,'Color',[.1+(3/4) .1+(3/4) .1+(3/4)]);
+% plot(tims, vert);
+set(gca, 'xtick', linspace(0, length(tims), 10), 'xtickLabel',linspace(0, elapTime, 10));
+ylabel('Vertical');
+box on
 axis tight
+ylim([yMin yMax]);
 hold off
 % plot and label P- and S-wave Arrivals
-ax = gca;
-[xaf, yaf] = ds2nfu([pArriv pArriv], [ax.YLim(1) - 100 ax.YLim(2) * 5.9]);
+axes(ah(1));
+[xaf, y1] = ds2nfu([pArriv pArriv], [ah(1).YLim(2)  0]);
+axes(ah(3));
+[xaf, y2] = ds2nfu([pArriv pArriv], [ah(3).YLim(1)  0]);
+yaf = [y1(1) y2(1)];
 annotation('line', xaf, yaf, 'Color','r','linestyle','--','linewidth',1);
-[xaf, yaf] = ds2nfu([sArriv sArriv], [ax.YLim(1) - 100 ax.YLim(2) * 5.9]);
+an1 = annotation('textarrow', [xaf(2)-.04 xaf(2)-.01], [yaf(1)-.02 yaf(1)-.02], 'String','P-Wave Arrival','Color','r');
+[xaf, ~] = ds2nfu([sArriv sArriv], [0 0]);
 annotation('line', xaf, yaf, 'Color','b','linestyle','--','linewidth',1);
-annotation('textarrow', [0.35 0.39], [0.8 0.8], 'String','P-Wave Arrival','Color','r');
-annotation('textarrow', [0.56 0.6], [0.8 0.8], 'String','S-Wave Arrival','Color','b');
+an2 = annotation('textarrow', [xaf(2)-.04 xaf(2)-.01], [yaf(1)-.02 yaf(1)-.02], 'String','S-Wave Arrival','Color','b');
 % label
-sgtitle('Rotated 3-Component Seismogram');
-suplabel('Counts','y');
-xticks(linspace(0, length(tims), 10));
-xticklabels(linspace(0, duration, 10));
-suplabel('Time (seconds)', 'x');
+tittle = sgtitle('Rotated 3-Component Seismogram');
+suplabel('Time (s)', 'x');
 end
 

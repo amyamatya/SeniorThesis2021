@@ -1,62 +1,69 @@
-%% Example of seismic signal
-% Last modified 1/13/21 by aamatya@princeton.edu
-
-% Station info
-network = 'II'; station = 'SACV'; channel = 'BH*'; location = '00';
-% Get random traces of > magnitude 7 events
+% Example of seismic signal
+% Last modified 1/20/21 by aamatya@princeton.edu
+%% Only run this once: Get SACV retrievals from 5/29/2000 > magnitude 6
+sacvStaCords = [14.97 -23.608];
+s1 = irisFetch.Stations('CHANNEL','II','SACV','00','BH*');
+t1 = s1.Channels(5).StartDate; % Earliest = channel 5
+sacvDonut = [sacvStaCords(1) sacvStaCords(2) 90 30];
+minMag = 6; maxMag = 9;
+sacvGet= irisFetch.Events('MinimumMagnitude',minMag,'MaximumMagnitude', maxMag,...
+    'radialcoordinates',sacvDonut, 'startTime',t1, 'includePZ');
+sacvEvents.mag = [sacvGet.PreferredMagnitudeValue]';
+sacvEvents.lat = [sacvGet.PreferredLatitude]';
+sacvEvents.lon = convertLon([sacvGet.PreferredLongitude]', '-180to360');
+sacvEvents.depth = [sacvGet.PreferredDepth]';
+sacvEvents.time = string({sacvGet.PreferredTime}');
+% % % Get SMVA retrievals from 11/10/2017
+% % svmaStaCords = [16.840389 -24.924999];
+% % s2 = irisFetch.Stations('CHANNEL','AF','SVMA','','BH*');
+% % t2 = s2.Channels(1).StartDate;
+% % svmaDonut = [svmaStaCords(1) svmaStaCords(2) 90 30];
+% % svmaEvents = irisFetch.Events('MinimumMagnitude',minMag,'MaximumMagnitude', maxMag,...
+% %     'radialcoordinates',svmaDonut, 'startTime',t2);
+%% Get random traces of > magnitude 6 SACV events
 count = 1;
-donutTraces2 = struct([]);
-ids1 = find(donutQuakes2.mag > 7);
-ids = randsample(ids1, 1);
-% stationtraces
+sacvTraces = struct([]);
+ids = randi(length(sacvEvents.mag));
+ids = 2;
+% station traces
 for i = 1:length(ids)
-    eventCords = [donutQuakes2.lat(ids) convertLon(donutQuakes2.lon(ids), '360to-180')];
-    
-    startTime = donutQuakes2.time{ids(i)};
+    eventCords = [sacvEvents.lat(ids(i)) convertLon(sacvEvents.lon(ids(i)), '360to-180')];
+    startTime = sacvEvents.time{ids(i)};
     endTime = datetime(startTime) + minutes(30);
     endTime = datestr(endTime, 'yyyy-mm-dd HH:MM:SS.FFF');
-    donutTraces2(i).quake = irisFetch.Traces(network,station,location,channel, startTime, endTime);
-end
-% plot unrotated components
-figure(4)
-for i = 1:3
-    subplot(3,1,i)        
-    plot(donutTraces2(1).quake(i).data)
-%     azim = donutTraces2.quake(1).azimuth(1);
-    if i == 1
-        title(sprintf('Radial, az = %0.1f',donutTraces2.quake(1).azimuth));
-    elseif i == 2
-        title(sprintf('Transverse, az = %0.1f',donutTraces2.quake(2).azimuth));
-    else title('Vertical');
+    sacvTraces(i).traces = irisFetch.Traces('II','SACV','00','BH*', startTime, endTime);
+    azim = azimuth(eventCords, sacvStaCords);
+    try
+        [ndat, edat] = seisne(sacvTraces(i).traces(1).data, sacvTraces(i).traces(2).data, sacvTraces(i).traces(1).azimuth);
+        [rdat, tdat] = seisrt(ndat, edat, backAzim(azim));
+    catch
+        continue
     end
-    if i ~= 3
-        set(gca, 'xticklabels',[])
-    end
-    axis tight
 end
-t1 = datevec(startTime,'yyyy-mm-dd HH:MM:SS');
-t2 = datevec(endTime,'yyyy-mm-dd HH:MM:SS');
-elapTime = etime(t2, t1);
-xticks(linspace(0, donutTraces2.quake(1).sampleCount, 10));
-xticklabels(linspace(0, elapTime, 10));
-suplabel('Time (seconds)', 'x');
-sgtitle('Default 3 Component Seismogram');
+% Plot 3 component seismogram
+figure(1)
+clf
+evDep = sacvEvents.depth(ids);
+datplot3(eventCords, evDep, sacvTraces(1).traces(1).data,sacvTraces(1).traces(2).data, ...
+    sacvTraces(1).traces(3).data, 'unrotated', startTime, endTime, sacvEvents.mag(ids), sacvTraces(1).traces(1).azimuth,...
+    sacvTraces(1).traces(2).azimuth);
 % calculate travel times
-evDep = donutTraces2.quake(1).depth;
-% SACV coordinates
-stationCords = [14.97 -23.608];
-% Event coords
-[timeTable, url] = mytaup(stationCords(1), stationCords(2), eventCords(1), eventCords(2), evDep);
-% plot rotated components
-startT = datestr(donutTraces2.quake(1).startTime, 'yyyy-mm-ddTHH:MM:SS');
-endT = datestr(donutTraces2.quake(1).endTime, 'yyyy-mm-ddTHH:MM:SS');
+[timeTable, url] = mytaup(eventCords(1), eventCords(2), evDep);
+startT = datestr(sacvTraces(1).traces(1).startTime, 'yyyy-mm-ddTHH:MM:SS');
+endT = datestr(sacvTraces(1).traces(1).endTime, 'yyyy-mm-ddTHH:MM:SS');
 [~, ~, ~, rad, trans, vert] = myrotate(startT, endT, azim);
-figure(5)
 hold on
 pArriv = str2num(timeTable(1,4));
 sArriv = str2num(timeTable(4,4));
-sacplot3(rad, trans, vert, startT, endT, pArriv, sArriv);
-hold off
+ranj = 600;
+% plot rotated components + particle motion
+figure(2)
+clf
+subplot(1,2,1)
+[tittle] = sacplot3(rad, trans, vert, startT, endT, pArriv, sArriv);
+tittle.String = sprintf('Magnitude %3.1f, Distance %4.1f %s, %s',...
+    sacvEvents.mag(ids), distance(eventCords, sacvStaCords), char(176), datestr(startTime));
 
-
-
+subplot(1,2,2)
+parcleMotn(rdat, tdat, sacvTraces(1).traces(3).data,...
+    pArriv, sArriv, sacvTraces(1).traces(1).sampleRate, ranj);

@@ -3,7 +3,7 @@ function [topoLat, topoLon, topoZ] = makeTopo(thePath)
 % Output latitude, longitude, elevation to directory specified by thePath
 
 %---Input Variables---------------
-% thePath   - optional path to desired location of topographic data .mat file
+% thePath   - optional path to desired location of topographic .mat file
 
 %---Output Variables---------------
 % topoLat   - relief latitudes
@@ -20,7 +20,6 @@ topoLon = repmat(topoLonOld', 1, lons);
 topoLat = topoLat(:); 
 topoLon = topoLon(:); 
 topoZ = double(topoZOld(:));
-
 if exist('thePath','var')
     save(sprintf('%s/topoData', path),'topoLat','topoLon','topoZ');
 end

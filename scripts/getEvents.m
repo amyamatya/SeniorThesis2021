@@ -2,7 +2,7 @@ function [sacvGet, sacvEvents] = getEvents(station, minRadius, maxRadius,minMag,
 % Fetch events from Cape Verde station incrementally to avoid overload
 % Last modified 2/13/21 @aamatya
 %---Input variables------------
-% station       - SACV or SVMA
+% station       - 'SACV' or 'SVMA'
 % minRadius     - lower limit for donut
 % maxRadius     - upper limit for donut
 % minMag        - lower limit magnitude

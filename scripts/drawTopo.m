@@ -1,4 +1,4 @@
-function [fig] = drawTopo(bound)
+function [fig, varargout] = drawTopo(bound)
 % Draw a worldmap with relief and plate boundaries
 % Plate boundary source: http://www-udc.ig.utexas.edu/external/plates/data.htm
 % Last modified 2/12/21 @aamatya
@@ -6,7 +6,14 @@ function [fig] = drawTopo(bound)
 %---Input variables------------
 % bound     - 1 = boundaries colored by type
 %           - 2 = all boundaries white
+%           - 3 = return boundaries to overlay on external data
 %           - default = no boundaries
+%---Output variables------------
+% fig       - figure handle
+% var       - optional returns of plate boundary data [lat lon]
+%               - 1 = divergent
+%               - 2 = convergent
+%               - 3 = transform
 
 % Load Cape Verde coordinates
 sacvLat = 14.97;
@@ -34,7 +41,7 @@ land = (levels == 1);
 % Show on worldmap
 clf
 hold on
-ax = worldmap([-80 80],[180 159]);
+ax = worldmap([-80 80],[sacvLon - 155 abs(155-(360 - sacvLon))]);
 geoshow(shorelines(land), 'facecolor', [0.4 0.9 0.4],'facealpha',0);
 scatterm(topoLon(1:20:end), topoLat(1:20:end),1, topoZ(1:20:end));
 demcmap([min(topoZ) max(topoZ)]);
@@ -50,17 +57,20 @@ if exist('bound','var')
         set(objhl, 'Markersize', 15);
     elseif bound == 2
         scatterm([divLat convLat transLat], [divLon convLon transLon], 1, 'w.');
+    elseif bound == 3
+        varargout{1} = [divLat;divLon]';
+        varargout{2} = [convLat;convLon]';
+        varargout{3} = [transLat;transLon]';
     end
 end
-scatterm(sacvLat, sacvLon, 10,'filled','wo');
-textm(sacvLat + 10, sacvLon - 10, 'CV','Color','w');
+% scatterm(sacvLat, sacvLon, 10,'filled','wo');
+% textm(sacvLat + 10, sacvLon - 10, 'CV','Color','w');
 axis image
 setm(ax, 'MlabelParallel', 'south');
 hold off
 fig = gcf;
 end
-
-% USGS plate boundaries
+% Alternative: USGS plate boundaries
 % plateKml = unzip('plate-boundaries.kmz');
 % [pbxOld, pby, pbz] = read_kml(string(plateKml(4)));
 % errs = find(pbz ~= 0);
@@ -68,10 +78,3 @@ end
 % pbx = convertLon(pbxOld, '-180to360');
 % scatterm(pby, pbx, 0.06, pbz); %'w.');
 % delete('usgs.jpg','PlateMotionLegend.png','doc.kml','arrow.png');
-
-
-
-
-
-
-

@@ -21,7 +21,7 @@ topoLat = topoLat(:);
 topoLon = topoLon(:); 
 topoZ = double(topoZOld(:));
 if exist('thePath','var')
-    save(sprintf('%s/topoData', path),'topoLat','topoLon','topoZ');
+    save(sprintf('%s/topoData',path),'topoLat','topoLon','topoZ');
 end
 delete('temp.gz','temp');
 end

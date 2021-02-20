@@ -2,19 +2,18 @@ function [fig, varargout] = drawTopo(bound)
 % Draw a worldmap with relief and plate boundaries
 % Plate boundary source: http://www-udc.ig.utexas.edu/external/plates/data.htm
 % Last modified 2/12/21 @aamatya
-
-%---Input variables------------
+%---------Input variables----------------------------
 % bound     - 1 = boundaries colored by type
 %           - 2 = all boundaries white
 %           - 3 = return boundaries to overlay on external data
 %           - default = no boundaries
-%---Output variables------------
+%---------Output variables---------------------------
 % fig       - figure handle
 % var       - optional returns of plate boundary data [lat lon]
 %               - 1 = divergent
 %               - 2 = convergent
 %               - 3 = transform
-
+%----------------------------------------------------
 % Load Cape Verde coordinates
 sacvLat = 14.97;
 sacvLon = convertLon(-23.608, '-180to360');

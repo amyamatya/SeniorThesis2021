@@ -1,6 +1,6 @@
 % figure03: SACV earthquake magnitude frequencies in and outside of donut
 % Last modified: 2/13/21 @aamatya
-
+%------------------------------------------------------------------------
 % Get events inside donut
 [sacvGet, sacvEvents] = getEvents('SACV',30, 90, 3, 9);
 % Get events outside donut
@@ -94,7 +94,6 @@ suplabel('Magnitude','x');
 suplabel('Counts','y');
 % print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure03','-dpdf');
 clearvars -except sacvEvents sacvEventsOut sacvGet sacvGetOut
-
 % % Alternative: fixed-bin-edge histogram
 % binEdges = 3:0.3:9;
 % counts = histcounts(sacvEvents.mag, binEdges);

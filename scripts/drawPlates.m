@@ -3,7 +3,7 @@ function [fig] = drawPlates()
 % Source: http://geoscience.wisc.edu/~chuck/MORVEL/PltBoundaries.html 
 % (Bird (2003) and Argus et al. (2011))
 % Last modified 2/12/21 @aamatya
-
+%---------------------------------------------------------------
 % Store Cape Verde
 sacvLat = 14.97;
 sacvLon = convertLon(-23.608, '-180to360');

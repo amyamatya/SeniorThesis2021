@@ -1,6 +1,6 @@
 %% figure02: plate map of Cape Verde
 % last modified 2/13/21 @aamatya
-
+%---------------------------------------------------------------
 clf
 figure;
 drawPlates();

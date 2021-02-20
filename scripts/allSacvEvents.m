@@ -1,8 +1,10 @@
-function [sacvEvents, sacvEventsOut] = allSacvEvents(sacvEvents, sacvEventsOut)
-% Get, store, save all events from SACV Station starting 05/29/2000
-% between magnitudes 3 and 9
+function [sacvEvents, sacvEventsOut] = allSacvEvents()
+% Get, store, save all events from SACV Station starting 05/29/2000 magnitudes 3-9
 % last modified 2/17/21 @aamatya
-
+%---------Output Variables------------------
+% sacvEvents            - event magnitude, location, depth, time within retrieval range
+% sacvEventsOut         - " outside retrieval range
+%-------------------------------------------
 % Get events inside donut
 [~, sacvEvents] = getEvents('SACV',30, 90, 3, 9);
 % Get events outside donut
@@ -19,4 +21,3 @@ clear sacvEventsOut sacvEventsOutOut
 sacvEventsOut = temp;
 save('/Users/aamatya/Documents/MATLAB/files/allSacvEvents.mat');
 end
-

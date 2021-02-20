@@ -1,69 +1,18 @@
-% Example of seismic signal
+% Figure05: SACV-SVMA Comparison
 % Last modified 1/20/21 by aamatya@princeton.edu
-% Load retrievals from 5/29/2000 > magnitude 6
-sacvLat = 14.9700; sacvLon = convertLon(-23.608, '-180to360');
-svmaLat = 16.84; svmaLon = convertLon(-24.92, '-180to360');
-[~,sacvEvents] = getEvents('SACV',0,180, 7.5, 10);
-[~,svmaEvents] = getEvents('SVMA',0,180, 7.5, 10);
-% Sort by magnitude
-[sacvEvents.mag,sacvIdx] = sort(sacvEvents.mag);
-sacvEvents.lat = sacvEvents.lat(sacvIdx);
-sacvEvents.lon = sacvEvents.lon(sacvIdx);
-[sacvEvents.mag,svmaIdx] = sort(svmaEvents.mag);
-svmaEvents.lat = svmaEvents.lat(svmaIdx);
-svmaEvents.lat = svmaEvents.lat(svmaIdx);
-% Biggest shared quake inside donut
-svmaDist = distance(svmaLat, svmaLon, svmaEvents.lat, svmaEvents.lon);
-svmaID = find(svmaDist > 30 & svmaDist < 90);
-svmaID = svmaID(end);
-theDate = svmaEvents.time(svmaID);
-theDate = extractBetween(theDate, 1, 10);
-theMatch = regexp(sacvEvents.time, regexptranslate('wildcard',sprintf('%s*', theDate)));
-sacvID = find(cellfun(@isempty, theMatch) == 0);
-% Biggest shared quake outside donut
-svmaIDOut = find(svmaDist < 30 | svmaDist > 90);
-svmaIDOut = svmaIDOut(end-5);
-theDateOut = svmaEvents.time(svmaIDOut);
-theDateOut = extractBetween(theDateOut, 1, 10);
-theMatchOut = regexp(sacvEvents.time, regexptranslate('wildcard',sprintf('%s*', theDateOut)));
-sacvIDOut = find(cellfun(@isempty, theMatchOut) == 0);
-% Get traces (SACV donut, SACV out donut, SVMA donut, SVMA out donut)
-eventCords = [sacvEvents.lat(sacvID) convertLon(sacvEvents.lon(sacvID), '360to-180')];
-startTime = sacvEvents.time(sacvID);
-endTime = datetime(startTime) + minutes(30);
-endTime = datestr(endTime, 'yyyy-mm-dd HH:MM:SS.FFF');
-try
-sacvTraceIn = irisFetch.Traces('II','SACV','00','BH*', startTime, endTime);
-catch
-end
-sacvTraceInAzim = azimuth(eventCords, [sacvLat convertLon(sacvLon,'360to-180')]);
-eventCords = [sacvEvents.lat(sacvIDOut) convertLon(sacvEvents.lon(sacvIDOut), '360to-180')];
-startTime = sacvEvents.time(sacvIDOut);
-endTime = datetime(startTime) + minutes(30);
-endTime = datestr(endTime, 'yyyy-mm-dd HH:MM:SS.FFF');
-try
-sacvTraceOut = irisFetch.Traces('II','SACV','00','BH*', startTime, endTime);
-catch
-end
-sacvTraceOutAzim = azimuth(eventCords, [sacvLat convertLon(sacvLon,'360to-180')]);
-eventCords = [svmaEvents.lat(svmaID) convertLon(svmaEvents.lon(svmaID), '360to-180')];
-startTime = svmaEvents.time(svmaID);
-endTime = datetime(startTime) + minutes(30);
-endTime = datestr(endTime, 'yyyy-mm-dd HH:MM:SS.FFF');
-try
-svmaTraceIn = irisFetch.Traces('AF','SVMA','','BH*', startTime, endTime);
-catch
-end
-svmmaTraceInAzim = azimuth(eventCords, [sacvLat convertLon(sacvLon,'360to-180')]);
-eventCords = [svmaEvents.lat(svmaIDOut) convertLon(svmaEvents.lon(svmaIDOut), '360to-180')];
-startTime = svmaEvents.time(svmaIDOut);
-endTime = datetime(startTime) + minutes(30);
-endTime = datestr(endTime, 'yyyy-mm-dd HH:MM:SS.FFF');
-try
-svmaTraceOut = irisFetch.Traces('AF','SVMA','','BH*', startTime, endTime);
-catch
-end
-sacvTraceOutAzim = azimuth(eventCords, [sacvLat convertLon(sacvLon,'360to-180')]);
+sacvLat = 14.9700; sacvLon = -23.608;
+svmaLat = 16.84; svmaLon = -24.92;
+% Find largest shared quake
+[sacvTrace, svmaTrace, sharedMag, sharedDep, sharedCords] = sharedTrace();
+%% Plot multi-component seismogram
+
+epiDistSacv = distance(sharedCords, [sacvTrace(1).latitude sacvTrace(1).longitude]);
+epiDistSvma = distance(sharedCords, [svmaTrace(1).latitude svmaTrace(1).longitude]);
+
+figure, traceplot3(svmaTrace, sharedCords, 'unrotated');
+figure, traceplot3(svmaTrace, sharedCords, 'rotated');
+figure, traceplot3(sacvTrace, sharedCords, 'unrotated');
+figure, traceplot3(sacvTrace, sharedCords, 'rotated');
 %%
 
 % Plot 3 component seismogram
@@ -83,11 +32,6 @@ pArriv = str2num(timeTable(1,4));
 sArriv = str2num(timeTable(4,4));
 ranj1 = 400;
 ranj2 = 1200;
-
-
-
-
-
 
 
 

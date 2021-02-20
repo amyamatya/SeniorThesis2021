@@ -5,45 +5,59 @@ svmaLat = 16.84; svmaLon = -24.92;
 % Find largest shared quake
 [sacvTrace, svmaTrace, sharedMag, sharedDep, sharedCords] = sharedTrace();
 %% Plot multi-component seismogram
+% run fetchRFQuakes first to get PZ Files
+timeFormat = 'yyyy-mm-dd HH:MM:SS.FFF';
+startTime = datestr(sacvTrace(1).startTime, timeFormat);
+endTime = datestr(sacvTrace(1).endTime, timeFormat);
+% Get transferred data and receiver functions
+[sacvRF, sacvRad, sacvTrans, sacvVert] = componentFiles('II','SACV','10','BH*','sharedSACV',startTime, endTime, 8, 8.2);
+[svmaRF, svmaRad, svmaTrans, svmaVert] = componentFiles('AF','SVMA','','BH*','sharedSVMA',startTime, endTime, 8, 8.2);
+[timeTable, ~] = mytaup(sharedCords(1), convertLon(sharedCords(2),'360to-180'), sharedDep);
+[row, ~] = find(strcmp(timeTable, 'P'));
+pArriv = str2num(timeTable(row(1),4));
+[row, ~] = find(strcmp(timeTable, 'S'));
+sArriv = str2num(timeTable(row(1),4));
+% Plot 
+figure;
+traceplot3(sacvTrace, sharedCords, 'unrotated');
+title(sprintf('SACV Unprocessed'));
+figure;
+traceplot3(sacvTrace, sharedCords, 'rotated');
+title(sprintf('SACV Rotated, Azimuth = %0.1f', azimuth(sharedCords, [sacvLat sacvLon])));
+figure;
+traceplot3(svmaTrace, sharedCords, 'unrotated');
+title(sprintf('SVMA Unprocessed'));
+figure;
+traceplot3(svmaTrace, sharedCords, 'rotated');
+title(sprintf('SVMA Rotated, Azimuth = %0.1f', azimuth(sharedCords, [svmaLat svmaLon])));
+figure(5);
+datplot3(sacvRad, sacvTrans, sacvVert, startTime, endTime, pArriv, sArriv);
+figure(6); 
+datplot3(svmaRad, svmaTrans, svmaVert, startTime, endTime, pArriv, sArriv);
 
-epiDistSacv = distance(sharedCords, [sacvTrace(1).latitude sacvTrace(1).longitude]);
-epiDistSvma = distance(sharedCords, [svmaTrace(1).latitude svmaTrace(1).longitude]);
-
-figure, traceplot3(svmaTrace, sharedCords, 'unrotated');
-figure, traceplot3(svmaTrace, sharedCords, 'rotated');
-figure, traceplot3(sacvTrace, sharedCords, 'unrotated');
-figure, traceplot3(sacvTrace, sharedCords, 'rotated');
-%%
-
-% Plot 3 component seismogram
-figure(1)
-clf
-evDep = sacvEvents.depth(ids);
-datplot3(eventCords, evDep, sacvTraces(1).traces(1).data,sacvTraces(1).traces(2).data, ...
-    sacvTraces(1).traces(3).data, 'unrotated', startTime, endTime, sacvEvents.mag(ids), sacvTraces(1).traces(1).azimuth,...
-    sacvTraces(1).traces(2).azimuth);
-% calculate travel times
-[timeTable, url] = mytaup(eventCords(1), eventCords(2), evDep);
-startT = datestr(sacvTraces(1).traces(1).startTime, 'yyyy-mm-ddTHH:MM:SS');
-endT = datestr(sacvTraces(1).traces(1).endTime, 'yyyy-mm-ddTHH:MM:SS');
-[~, ~, ~, rad, trans, vert] = myrotate(startT, endT, azim);
-hold on
-pArriv = str2num(timeTable(1,4));
-sArriv = str2num(timeTable(4,4));
-ranj1 = 400;
-ranj2 = 1200;
 
 
+close all
+figure,
+subplot(3,6,[1:4])
+plot(sacvRad)
+subplot(3,5,[4:5 9:10 14:15])
+plot(sacvRF)
+subplot(3,5,[6:8])
+plot(sacvTrans)
+subplot(3,5,[11:13])
+plot(sacvVert)
+hold off
+figure,
+subplot(3,8,[1:5])
+plot(svmaRad)
+subplot(3,8,[6:8 14:16 22:24])
+plot(svmaRF)
+subplot(3,8,[9:13])
+plot(svmaTrans)
+subplot(3,8,[17:21])
+plot(svmaVert)
+hold off
+print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/fleija','-fillpage','-dpdf');
 
-%% plot rotated components + particle motion
-figure(2)
-clf
-subplot(1,2,1)
-[tittle] = sacplot3(rad, trans, vert, startT, endT, pArriv, sArriv);
-tittle.String = sprintf('Magnitude %3.1f, Distance %4.1f %s, %s',...
-    sacvEvents.mag(ids), distance(eventCords, sacvStaCords), char(176), datestr(startTime));
-
-subplot(1,2,2)
-parcleMotn(rdat, tdat, sacvTraces(1).traces(3).data,...
-    pArriv, sArriv, sacvTraces(1).traces(1).sampleRate, ranj1, ranj2);
 

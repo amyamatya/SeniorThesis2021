@@ -32,17 +32,17 @@ end
 startT = theEvents(1);
 endT = datestr(datenum(startT) + minutes(30), timeFormat);
 startT = datestr(theEvents(1), timeFormat);
-myFetchRFQuakes(fullfile(sacDir,'/'), minMag, maxMag, startT, endT);
+myFetchRFQuakes('II','SACV','00','BH*',fullfile(sacDir,'/'), minMag, maxMag, startT, endT);
 fileNames = dir(sacDir);
 fileNames = string({fileNames.name});
 % Get components
 rMatch = regexp(fileNames, regexptranslate('wildcard','*SACV.00.BH1*'));
 if isempty([rMatch{:}])
-    rMatch = regexp(fileNames, regexptranslate('wildcard','*SACV.00.BHE*'));
+    rMatch = regexp(fileNames, regexptranslate('wildcard','*SACV.00.BHN*'));
 end
 tMatch = regexp(fileNames, regexptranslate('wildcard','*SACV.00.BH2*'));
 if isempty([tMatch{:}])
-    tMatch = regexp(fileNames, regexptranslate('wildcard','*SACV.00.BHN*'));
+    tMatch = regexp(fileNames, regexptranslate('wildcard','*SACV.00.BHE*'));
 end
 zMatch = regexp(fileNames, regexptranslate('wildcard','*SACV.00.BHZ*'));
 for i = 1:length(rMatch)
@@ -62,7 +62,7 @@ trans = fullfile(sacDir, trans);
 vert = fullfile(sacDir, vert);
 % Get transferred components and receiver function
 copyfile('~/Documents/MATLAB/ST2021/data/SAC_PZ*', fullfile(sacDir,'/'));
-[theRad, theTrans, theVert] = myComputeRFs(sacDir, rfDir, rad, trans, vert);
+[theRad, theTrans, theVert] = myComputeRFs(sacDir, rfDir, rad, trans, vert, '00');
 list = dir(fullfile(sacDir, 'RFs'));
 theRF = readsac(fullfile(rfDir, list(end).name));
 end

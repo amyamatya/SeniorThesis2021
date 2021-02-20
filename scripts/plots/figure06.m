@@ -1,6 +1,6 @@
 % figure06: comparison shallow-small, shallow-large, deep-large event worldmap
-% last edit 2/18/21 @aammmatya
 %------------------------------------------------------------------------
+
 % Get traces and RFs
 [ssRF, ssRad, ssTrans, ssVert, ssCords, ssDepth, ssMag, ssStart, ssEnd] = sizeDepth(5.499, 5.50, 0.1, 4, 'smallShallow');
 [bsRF, bsRad, bsTrans, bsVert, bsCords, bsDepth, bsMag, bsStart, bsEnd] = sizeDepth(8.3, 9, 0.1, 4, 'bigShallow');
@@ -71,25 +71,45 @@ hold off
 % print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure06','-fillpage','-dpdf');
 
 % calculate travel times
-[timeTable, url] = mytaup(ssCords(1), convertLon(ssCords(2),'360to-180'), ssDepth);
-datestr(ssStart, 'yyyy-mm-ddTHH:MM:SS');
-sampRate = length(ssRad)/eIristime(startT, endT);
-hold on
+[timeTable, ~] = mytaup(ssCords(1), convertLon(ssCords(2),'360to-180'), ssDepth);
+startT = datestr(ssStart, 'yyyy-mm-ddTHH:MM:SS');
+endT = datestr(ssEnd, 'yyyy-mm-ddTHH:MM:SS');
+ssSampRate = length(ssRad)/eIristime(startT, endT);
 [row, col] = find(strcmp(timeTable, 'P'));
-pArriv = str2num(timeTable(row(1),4));
+ssPArriv = str2num(timeTable(row(1),4));
 [row, col] = find(strcmp(timeTable, 'S'));
-sArriv = str2num(timeTable(row(1),4));
+ssSArriv = str2num(timeTable(row(1),4));
+
+[timeTable, ~] = mytaup(bsCords(1), convertLon(bsCords(2),'360to-180'), ssDepth);
+startT = datestr(bsStart, 'yyyy-mm-ddTHH:MM:SS');
+endT = datestr(bsEnd, 'yyyy-mm-ddTHH:MM:SS');
+bsSampRate = length(bsRad)/eIristime(startT, endT);
+[row, col] = find(strcmp(timeTable, 'P'));
+bsPArriv = str2num(timeTable(row(1),4));
+[row, col] = find(strcmp(timeTable, 'S'));
+bsSArriv = str2num(timeTable(row(1),4));
+
+[timeTable, ~] = mytaup(bdCords(1), convertLon(bdCords(2),'360to-180'), ssDepth);
+startT = datestr(bdStart, 'yyyy-mm-ddTHH:MM:SS');
+endT = datestr(bdEnd, 'yyyy-mm-ddTHH:MM:SS');
+bdSampRate = length(bdRad)/eIristime(startT, endT);
+[row, col] = find(strcmp(timeTable, 'P'));
+bdPArriv = str2num(timeTable(row(1),4));
+[row, col] = find(strcmp(timeTable, 'S'));
+bdSArriv = str2num(timeTable(row(1),4));
+
+
 % Plot particle motions
 close all
 figure(1)
-titl(1) = parcleMotn(ssRad, ssTrans, ssVert, pArriv, sArriv, sampRate, 1000, 1000);
+titl(1) = parcleMotn(ssRad, ssTrans, ssVert, ssPArriv, ssSArriv, ssSampRate, 1000, 1000);
 titl(1).String = 'Small-Shallow';
 figure(2)
-titl(2) = parcleMotn(bsRad, bsTrans, bsVert, pArriv, sArriv, sampRate, 1000, 1000);
+titl(2) = parcleMotn(bsRad, bsTrans, bsVert, bsPArriv, bsSArriv, bsSampRate, 1000, 1000);
 titl(2).String = 'Large-Shallow';
 figure(3)
-titl(3) = parcleMotn(bdRad, bdTrans, bdVert, pArriv, sArriv, sampRate, 1000, 1000);
-titl(3).String = 'Small-Deep';
+titl(3) = parcleMotn(bdRad, bdTrans, bdVert, bdPArriv, bdSArriv, bdSampRate, 1000, 1000);
+titl(3).String = 'Large-Deep';
 
 
 

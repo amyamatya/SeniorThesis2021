@@ -18,8 +18,8 @@ nsMin = min(min([NS(pStart:pEnd) NS(sStart:sEnd)]));
 nsMax = max(max([NS(pStart:pEnd) NS(sStart:sEnd)]));
 ewMin = min(min([EW(pStart:pEnd) EW(sStart:sEnd)]));
 ewMax = max(max([EW(pStart:pEnd) EW(sStart:sEnd)]));
-zeeMin = min(min([zee(pStart:pEnd) zee(sStart:sEnd)]));
-zeeMax = max(max([zee(pStart:pEnd) zee(sStart:sEnd)]));
+zeeMin = min(min([Zee(pStart:pEnd) Zee(sStart:sEnd)]));
+zeeMax = max(max([Zee(pStart:pEnd) Zee(sStart:sEnd)]));
 % P-wave in R-Z
 subplot(2,2,1);
 hold on

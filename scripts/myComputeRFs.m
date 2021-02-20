@@ -1,4 +1,4 @@
-function [rad, trans, vert] = myComputeRFs(dataDir, rfDir, rad, trans, vert)
+function [rad, trans, vert] = myComputeRFs(dataDir, rfDir, rad, trans, vert, locatn)
 % Adaptation of computeRFs from aburky@princeton.edu to take inputs
 % Rotate, remove instrument response, calculate receiever function for given traces
 %---------Input Variables------------------------------------
@@ -14,17 +14,22 @@ network = 'II';
 if ~exist(rfDir,'dir')
     mkdir(rfDir)
 elseif exist(rfDir,'dir') == 7
-    disp('Receiver function directory already exists! Deleting it...')
     rmdir(rfDir,'s')
     mkdir(rfDir)
 end
 % Poles and Zeros data
-pzData = dir(fullfile(dataDir,'SAC_PZs*'));
+if strcmp(locatn, '10')
+    pzData = dir('~/Documents/MATLAB/ST2021/ten/');
+elseif strcmp(locatn, '')
+    pzData = dir('~/Documents/MATLAB/ST2021/svma/');
+else
+    pzData = dir(fullfile(dataDir,'SAC_PZs*'));
+end
 % Read in events for which all 3 components exist
 j = 1;
-[sac{j}.te,sac{j}.de,sac{j}.he] = fread_sac(fullfile(char(rad)));
+[sac{j}.te,sac{j}.de,sac{j}.he] = fread_sac(fullfile(char(trans)));
 sac{j}.efile = rad;
-[sac{j}.tn,sac{j}.dn,sac{j}.hn] = fread_sac(fullfile(char(trans)));
+[sac{j}.tn,sac{j}.dn,sac{j}.hn] = fread_sac(fullfile(char(rad)));
 sac{j}.nfile = trans;
 [sac{j}.tz,sac{j}.dz,sac{j}.hz] = fread_sac(fullfile(char(vert)));
 sac{j}.zfile = vert;
@@ -107,7 +112,7 @@ for i = 1:length(rGood)
     
     sac{rGood(i)}.drc = sac{rGood(i)}.dr(bidx:eidx);
     sac{rGood(i)}.drc = sac{rGood(i)}.drc.*...
-                        tukeywin(length(sac{rGood(i)}.drc),taperw);
+        tukeywin(length(sac{rGood(i)}.drc),taperw);
 end
 for i = 1:length(sac)
     pidx = fix(sac{i}.hz.t(1)/sac{i}.hz.delta);
@@ -148,7 +153,7 @@ for i = 1:length(rGood)
         rf{j}.rsnr = rs/rn;
         j = j + 1;
     end
-end   
+end
 % Save RFs and component data
 for i = 1:length(rf)
     saveRF(rf{i},rfDir);

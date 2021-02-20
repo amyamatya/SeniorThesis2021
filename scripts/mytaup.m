@@ -2,9 +2,13 @@ function [datFinal, url] = mytaup(evLat, evLon, evDepth, phase)
 % Return travel times using IRIS web service
 % Last edit 2/17/21 @aamatya
 %---------Input Variables---------------------------
-% evLat, evLon, evDepth         - event info
-% phase                         - optional: query phase
+% evLat, evLon, evDepth     - event info
+% phase                     - optional: query phase
+%---------Output Variables--------------------------
+% datFinal                  - string table of arrival times
+% url                       - retrieval url for IRIS webservice
 %---------------------------------------------------
+
 staLat = 14.97; staLon = -23.608;
 % build URL using inputs, returning all phases unless specified
 if ~exist('phase','var')

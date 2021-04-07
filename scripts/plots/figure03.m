@@ -9,6 +9,7 @@
 sacvGetOut = [sacvGetOut sacvGetOutOut];
 sacvEventsOut = [sacvEventsOut sacvEventsOutOut];
 fn = fieldnames(sacvEventsOut);
+temp = struct;
 for i=1:numel(fn)
     temp.(fn{i}) = [sacvEventsOut(1).(fn{i})' sacvEventsOut(2).(fn{i})'];
     sacvEventsOut.(fn{i}) = temp.(fn{i})';
@@ -35,6 +36,7 @@ for i = 1:8
         magInfo = strcat(magInfo, sprintf(' %d %s,', magFreqs(i), magTypes(i)));
     end
 end
+%%
 % Make frequency histograms
 close all
 figure;
@@ -45,6 +47,8 @@ barCats = reordercats(barCats,magTypes(1:7));
 barCounts = magFreqs(1:7);
 bar(barCats, barCounts,'FaceColor',[.5 .5 .5]);
 ylim([0 max(barCounts) + 5e4]);
+ax = gca;
+ax.YGrid = 'on';
 title('Types');
 % curve-fitted event frequencies
 subplot(3,1,2)
@@ -75,6 +79,8 @@ lg(4).Children.FaceColor = [.8 0 0];
 title('Fitted');
 sgtitle('Magnitude Frequency');
 box on
+ax = gca;
+ax.YGrid = 'on';
 hold off
 % Y-Log event frequencies
 subplot(3,1,3)
@@ -89,6 +95,8 @@ for i = 1:length(ph)
 end
 set(gca,'yscale','log')
 title('Log');
+ax = gca;
+ax.YGrid = 'on';
 xlim([3 9.2]);
 suplabel('Magnitude','x');
 suplabel('Counts','y');

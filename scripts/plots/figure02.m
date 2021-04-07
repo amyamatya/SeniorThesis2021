@@ -4,5 +4,6 @@
 clf
 figure;
 drawPlates();
+
 title('Major Tectonic Plates');
-print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure02','-dpdf');
+% print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure02','-dpdf');

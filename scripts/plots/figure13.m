@@ -8,8 +8,6 @@ rfNames = {rfs.name};
 [evlat, evlon, evmag, evdep, fits] = myStackRfsStats(string(rfNames), ...
     ['/Users/aamatya/Documents/MATLAB/ST2021/allCVEvents/RFs'],...
     'SVMA');
-
-
 % Plot each channel
 clf
 hold on
@@ -17,9 +15,6 @@ clear z stk mbstk sdv
 [z, stk, mbstk, sdv, rfLength] = myStackRfs(string(rfNames), ...
     ['/Users/aamatya/Documents/MATLAB/ST2021/allCVEvents/RFs'],...
     'SVMA');
-
-
-
 pos = mbstk - (2.*sdv);
 pos(pos < 0) = 0;
 neg = mbstk + (2.*sdv);

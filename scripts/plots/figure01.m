@@ -1,4 +1,3 @@
-
 %% figure01: topographic/plate boundary map of Cape Verde
 % Last modified 2/13/21 by aamatya@princeton.edu
 %------------------------------------------------------------------------

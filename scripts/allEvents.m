@@ -1,5 +1,5 @@
-function [sacvEvents, sacvEventsOut] = allSacvEvents()
-% Get, store, save all events from SACV Station starting 05/29/2000 magnitudes 3-9
+function [sacvEvents, sacvEventsOut] = allEvents()
+% Get, store, save all events starting 05/29/2000 magnitudes 3-9
 % last modified 2/17/21 @aamatya
 %---------Output Variables------------------
 % sacvEvents            - event magnitude, location, depth, time within retrieval range

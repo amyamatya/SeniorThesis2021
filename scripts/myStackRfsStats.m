@@ -1,4 +1,4 @@
-function [z, stack, mbstk, sdv, j] = myStackRfs(rfNames, rfdir, station)
+function [z, stack, j, stats, mag, depth] = myStackRfsStats(rfNames, rfdir, station)
 % Adaptation of stackRFs.m from aburky@princeton.edu to take inputs
 % Stack existing receiver functions
 %---------Input Variables------------------------------------
@@ -29,6 +29,7 @@ for i = 1:length(rfNames)
             rf_0{i}.h.user(3) > fit && rf_0{i}.h.user(4) > nu && ...
             rf_0{i}.h.gcarc >= gcarc
         % Keep receiver functions which pass all QC
+        keyboard
         rf{j} = rf_0{i};
         gcarcs(j) = rf{j}.h.gcarc;
         evla(j) = rf{j}.h.evla;

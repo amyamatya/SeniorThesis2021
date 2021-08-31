@@ -4,7 +4,7 @@ function [] = myFetchRFQuakes(network, station, location, channel, sacDir, minMa
 %---------Input Variables------------------------------------
 % sacDir                   - destination path for output SAC files
 % minMag, maxMag           - query magnitudes
-% fetchStart, fetchEnd     - query times (
+% fetchStart, fetchEnd     - query times ('yyyy-mm-dd HH:MM:SS')
 %------------------------------------------------------------
 ch = irisFetch.Channels('RESPONSE',network,station,location,channel);
 if ~exist(sacDir,'dir')

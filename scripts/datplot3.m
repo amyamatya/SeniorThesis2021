@@ -10,25 +10,28 @@ function [theFig] = datplot3(rad, trans, vert, startT, endT, pArriv, sArriv)
 t1 = datestr(startT,'yyyy-mm-ddTHH:MM:SS');
 t2 = datestr(endT,'yyyy-mm-ddTHH:MM:SS');
 elapTime = eIristime(t1, t2);
-tims = linspace(1, elapTime, length(rad));
+tims = linspace(0, elapTime, length(rad));
 yMin = min(min([rad; trans; vert]));
 yMax = max(max([rad ;trans; vert]));
 % plot parallel component
 ah(1) = subplot(3,1,1);
 hold on
 plot(tims, rad, 'color',[.1+(1/4) .1+(1/4) .1+(1/4)]);
+box on
 set(gca, 'xticklabels',[]);
 ylim([yMin yMax]);
 hold off
 % orthogonal component
 ah(2) = subplot(3,1,2);
 plot(tims, trans, 'Color',[.1+(2/4) .1+(2/4) .1+(2/4)]);
+box on
 set(gca, 'xticklabels',[]);
 ylim([yMin yMax]);
 hold off
 % vertical component
 ah(3) = subplot(3,1,3);
 plot(tims, vert, 'Color',[.1+(3/4) .1+(3/4) .1+(3/4)]);
+box on
 ylim([yMin yMax]);
 set(gca, 'xtick', linspace(0, elapTime, 10), 'xtickLabel',linspace(0, elapTime, 10));
 % xticklabels(linspace(0, elapTime, 10));

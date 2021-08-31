@@ -1,6 +1,6 @@
-function [rad, trans, vert] = myComputeRFs(dataDir, rfDir, rad, trans, vert, locatn)
+function [] = tryGWs(dataDir, rfDir, locatn,gw)
 % Adaptation of computeRFs from aburky@princeton.edu to take inputs
-% Rotate, remove instrument response, calculate receiever function for given traces
+% Rotate, remove instrument response, calculate receiver function for given traces
 %---------Input Variables------------------------------------
 % dataDir               - directory of stored trace
 % rfDir                 - destination directory for calculated receiver functions
@@ -11,7 +11,7 @@ function [rad, trans, vert] = myComputeRFs(dataDir, rfDir, rad, trans, vert, loc
 %------------------------------------------------------------
 % Network (for filename convention)
 network = 'II';
-% Directory where receiever functions will be saved
+% Directory where receiver functions will be saved
 if ~exist(rfDir,'dir')
     mkdir(rfDir)
 elseif exist(rfDir,'dir') == 7
@@ -26,14 +26,126 @@ elseif strcmp(locatn, '')
 elseif strcmp(locatn, '00')
     pzData = dir('~/Documents/MATLAB/ST2021/zero/');
 end
+
+% Files with 'BHE' or 'BHN' naming convention
+eData = dir(fullfile(dataDir,'*BHE*SAC'));
+nData = dir(fullfile(dataDir,'*BHN*SAC'));
+
+% Files with 'BH1' or 'BH2' naming convention
+nData1 = dir(fullfile(dataDir,'*BH1*SAC'));
+eData2 = dir(fullfile(dataDir,'*BH2*SAC'));
+
+% Vertical component files
+zData = dir(fullfile(dataDir,'*BHZ*SAC'));
+
+% Determine which component has the most data
+nFiles = [length(eData)+length(eData2), length(nData)+length(nData1), ...
+          length(zData)];    
+[~,idx] = max(nFiles);
+% Poles and Zeros data
+pzData = dir(fullfile(dataDir,'SAC_PZs*'));
+
 % Read in events for which all 3 components exist
 j = 1;
-[sac{j}.te,sac{j}.de,sac{j}.he] = fread_sac(fullfile(char(trans)));
-sac{j}.efile = rad;
-[sac{j}.tn,sac{j}.dn,sac{j}.hn] = fread_sac(fullfile(char(rad)));
-sac{j}.nfile = trans;
-[sac{j}.tz,sac{j}.dz,sac{j}.hz] = fread_sac(fullfile(char(vert)));
-sac{j}.zfile = vert;
+for i = 1:max(nFiles)
+    % 'BHE' channel has most data
+    if idx == 1
+        if i <= length(eData)
+            evh = strsplit(eData(i).name,network);
+            traces = dir(fullfile(dataDir,[evh{1},'*SAC']));
+            if length(traces) == 3
+                [sac{j}.te,sac{j}.de,sac{j}.he] = fread_sac(fullfile(...
+                    dataDir,traces(1).name));
+                sac{j}.efile = traces(1).name;
+                [sac{j}.tn,sac{j}.dn,sac{j}.hn] = fread_sac(fullfile(...
+                    dataDir,traces(2).name));
+                sac{j}.nfile = traces(2).name;
+                [sac{j}.tz,sac{j}.dz,sac{j}.hz] = fread_sac(fullfile(...
+                    dataDir,traces(3).name));
+                sac{j}.zfile = traces(3).name;
+                j = j + 1;
+            end
+        else
+            evh = strsplit(eData2(i - length(eData)).name,network);
+            traces = dir(fullfile(dataDir,[evh{1},'*SAC']));
+            if length(traces) == 3
+                [sac{j}.te,sac{j}.de,sac{j}.he] = fread_sac(fullfile(...
+                    dataDir,traces(2).name));
+                sac{j}.efile = traces(2).name;
+                [sac{j}.tn,sac{j}.dn,sac{j}.hn] = fread_sac(fullfile(...
+                    dataDir,traces(1).name));
+                sac{j}.nfile = traces(1).name;
+                [sac{j}.tz,sac{j}.dz,sac{j}.hz] = fread_sac(fullfile(...
+                    dataDir,traces(3).name));
+                sac{j}.zfile = traces(3).name;
+                j = j + 1;
+            end
+        end
+    % 'BHN' channel has most data
+    elseif idx == 2
+        if i <= length(nData)
+            evh = strsplit(nData(i).name,network);
+            traces = dir(fullfile(dataDir,[evh{1},'*SAC']));
+            if length(traces) == 3
+                [sac{j}.te,sac{j}.de,sac{j}.he] = fread_sac(fullfile(...
+                    dataDir,traces(1).name));
+                sac{j}.efile = traces(1).name;
+                [sac{j}.tn,sac{j}.dn,sac{j}.hn] = fread_sac(fullfile(...
+                    dataDir,traces(2).name));
+                sac{j}.nfile = traces(2).name;
+                [sac{j}.tz,sac{j}.dz,sac{j}.hz] = fread_sac(fullfile(...
+                    dataDir,traces(3).name));
+                sac{j}.zfile = traces(3).name;
+                j = j + 1;
+            end
+        else
+            evh = strsplit(nData1(i - length(nData)).name,network);
+            traces = dir(fullfile(dataDir,[evh{1},'*SAC']));
+            if length(traces) == 3
+                [sac{j}.te,sac{j}.de,sac{j}.he] = fread_sac(fullfile(...
+                    dataDir,traces(2).name));
+                sac{j}.efile = traces(2).name;
+                [sac{j}.tn,sac{j}.dn,sac{j}.hn] = fread_sac(fullfile(...
+                    dataDir,traces(1).name));
+                sac{j}.nfile = traces(1).name;
+                [sac{j}.tz,sac{j}.dz,sac{j}.hz] = fread_sac(fullfile(...
+                    dataDir,traces(3).name));
+                sac{j}.zfile = traces(3).name;
+                j = j + 1;
+            end
+            
+        end
+    % 'BHZ' channel has most data
+    elseif idx == 3
+        evh = strsplit(zData(i).name,network);
+        traces = dir(fullfile(dataDir,[evh{1},'*SAC']));
+        if length(traces) == 3
+            if contains(traces(1).name,'BHE')
+                [sac{j}.te,sac{j}.de,sac{j}.he] = fread_sac(fullfile(...
+                    dataDir,traces(1).name));
+                sac{j}.efile = traces(1).name;
+            elseif contains(traces(1).name,'BH1')
+                [sac{j}.tn,sac{j}.dn,sac{j}.hn] = fread_sac(fullfile(...
+                    dataDir,traces(1).name));
+                sac{j}.nfile = traces(1).name;
+            end
+            if contains(traces(2).name,'BHN')
+                [sac{j}.tn,sac{j}.dn,sac{j}.hn] = fread_sac(fullfile(...
+                    dataDir,traces(2).name));
+                sac{j}.nfile = traces(2).name;
+            elseif contains(traces(2).name,'BH2')
+                [sac{j}.te,sac{j}.de,sac{j}.he] = fread_sac(fullfile(...
+                    dataDir,traces(2).name));
+                sac{j}.efile = traces(2).name;
+            end
+            [sac{j}.tz,sac{j}.dz,sac{j}.hz] = fread_sac(fullfile(...
+                dataDir,traces(3).name));
+            sac{j}.zfile = traces(3).name;
+            j = j + 1;
+        end
+    end
+end
+
 % Instrument response removal parameters
 r = 0.1;
 freqlims = [0.002 0.004 5 10];
@@ -74,6 +186,7 @@ for i = 1:length(sac)
     end
 end
 % Rotate horizontal components
+
 k = 1;
 for i = 1:length(sac)
     % Make sure lengths of data vectors are equal before rotating
@@ -87,6 +200,7 @@ for i = 1:length(sac)
         k = k + 1;
     end
 end
+
 % Optionally filter data
 fc = [0.02 0.2];
 for i = 1:length(rGood)
@@ -124,12 +238,10 @@ for i = 1:length(sac)
     sac{i}.dzc = sac{i}.dzc.*tukeywin(length(sac{i}.dzc),taperw);
 end
 % Calculate receiver functions
-gw = 1.0;
 tshift = 10;
 itmax = 1000;
 tol = 0.001;
 j = 1;
-keyboard
 for i = 1:length(rGood)
     if isequal(length(sac{rGood(i)}.dz),length(sac{rGood(i)}.dr))
         npts = length(sac{rGood(i)}.drc);
@@ -160,5 +272,4 @@ end
 for i = 1:length(rf)
     saveRF(rf{i},rfDir);
 end
-rad = sac{1}.de; trans = sac{1}.dn; vert = sac{1}.dz;
 end

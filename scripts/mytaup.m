@@ -12,9 +12,9 @@ function [datFinal, url] = mytaup(evLat, evLon, evDepth, phase)
 staLat = 14.97; staLon = -23.608;
 % build URL using inputs, returning all phases unless specified
 if ~exist('phase','var')
-    url = sprintf('http://service.iris.edu/irisws/traveltime/1/query?model=prem&staloc=[%f,%f]&evloc=[%f,%f]&evdepth=%f',staLat, staLon, evLat, evLon, evDepth);
+    url = sprintf('http://service.iris.edu/irisws/traveltime/1/query?model=iasp91&staloc=[%f,%f]&evloc=[%f,%f]&evdepth=%f',staLat, staLon, evLat, evLon, evDepth);
 else
-    url = sprintf('http://service.iris.edu/irisws/traveltime/1/query?model=prem&staloc=[%f,%f]&evloc=[%f,%f]&evdepth=%f&phases=%s',staLat, staLon, evLat, evLon, evDepth, phase);
+    url = sprintf('http://service.iris.edu/irisws/traveltime/1/query?model=iasp91&staloc=[%f,%f]&evloc=[%f,%f]&evdepth=%f&phases=%s',staLat, staLon, evLat, evLon, evDepth, phase);
 end
 % store and resize URL outputs
 dat = urlread(url);

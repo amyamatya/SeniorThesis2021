@@ -21,32 +21,34 @@ pArriv = str2num(timeTable(row(1),4));
 [row, ~] = find(strcmp(timeTable, 'S'));
 sArriv = str2num(timeTable(row(1),4));
 %% Plot
-clf
-traceplot3(sacvTrace, sharedCords, 'unrotated');
-print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure05/figure01','-dpdf','-r600');
-clf
-traceplot3(sacvTrace, sharedCords, 'rotated');
-title(sprintf('Azimuth = %0.1f', azimuth(sharedCords, [sacvLat sacvLon])));
-print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure05/figure02','-dpdf','-r600');
-clf
+% clf
+% traceplot3(sacvTrace, sharedCords, 'unrotated');
+% print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure05/figure01','-dpdf','-r600');
+% clf
+% traceplot3(sacvTrace, sharedCords, 'rotated');
+% title(sprintf('Azimuth = %0.1f', azimuth(sharedCords, [sacvLat sacvLon])));
+% print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure05/figure02','-dpdf','-r600');
+% clf
 datplot3(sacvRad, sacvTrans, sacvVert, startTime, endTime, pArriv, sArriv);
-print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure05/figure03','-dpdf','-r600');
-clf
-traceplot3(svmaTrace, sharedCords, 'unrotated');
-print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure05/figure04','-dpdf','-r600');
-clf
-traceplot3(svmaTrace, sharedCords, 'rotated');
-title(sprintf('Azimuth = %0.1f', azimuth(sharedCords, [svmaLat svmaLon])));
-print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure05/figure05','-dpdf','-r600');
+% print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure05/figure03','-dpdf','-r600');
+% clf
+% traceplot3(svmaTrace, sharedCords, 'unrotated');
+% print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure05/figure04','-dpdf','-r600');
+% clf
+% traceplot3(svmaTrace, sharedCords, 'rotated');
+% title(sprintf('Azimuth = %0.1f', azimuth(sharedCords, [svmaLat svmaLon])));
+% print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure05/figure05','-dpdf','-r600');
 clf
 datplot3(svmaRad, svmaTrans, svmaVert, startTime, endTime, pArriv, sArriv);
-print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure05/figure06','-dpdf','-r600');
+% print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure05/figure06','-dpdf','-r600');
 
 %%
 clf
 plot(sacvRF);
 title('SACV Receiver Function');
 axis tight
+ax = gca;
+ax.XGrid = 'on';
 xlabel('Time (s)');
 ylabel('$\bar{f}_{Z \rightarrow R}(p,z)$','Interpreter','Latex')
 print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure05/figure07','-dpdf','-r600');
@@ -55,6 +57,8 @@ clf
 plot(svmaRF);
 title('SVMA Receiver Function');
 axis tight
+ax = gca;
+ax.XGrid = 'on';
 xlabel('Time (s)');
 ylabel('$\bar{f}_{Z \rightarrow R}(p,z)$','Interpreter','Latex')
 print(gcf, '/Users/aamatya/Documents/MATLAB/ST2021/figures/figure05/figure08','-dpdf','-r600');

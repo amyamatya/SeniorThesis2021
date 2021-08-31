@@ -18,8 +18,8 @@ for i = 1:length(theTrace)
     end
 end
 % Find y-limits
-yMin = min(min([theTraces{1} theTraces{2} theTraces{3}]));
-yMax = max(min([theTraces{1} theTraces{2} theTraces{3}]));
+yMin = [];
+yMax = [];
 tims = 1:length(theTraces{1});
 % calculate trace duration, distance, depths
 t1 = datevec(theTrace(1).startTime);
@@ -34,9 +34,11 @@ if ~isempty(theTraces{1})
     hold on
     if strcmp(rotation, 'unrotated')
         plot(tims, theTraces{1}, 'color',[.1+(count/4) .1+(count/4) .1+(count/4)]);
+        yMin = min([yMin min(theTraces{1})]);
+        yMax = max([yMax max(theTraces{1})]);
+        box on
         ylabel(sprintf('North-South (%3.0f%s)', ...
             theTrace(1).azimuth, char(176)));
-        xlim([0 length(tims)]);
     elseif strcmp(rotation, 'rotated')
         if numPlots == 3
             [rad, ~,~] = myrotate(theTrace(1).station, theTrace(1).startTime, theTrace(1).location, theTrace(1).endTime, azim, 'ZRT');
@@ -45,9 +47,11 @@ if ~isempty(theTraces{1})
         elseif numPlots == 2 & (contains([theTrace.channel], 'BHE') | contains([theTrace.channel],'BH2'))
             [rad, ~,~] = myrotate(theTrace(1).station, theTrace(1).startTime, theTrace(1).location, theTrace(1).endTime, azim, 'ZT');
         end
+        yMin = min([yMin rad]);
+        yMax = max([yMax rad]);
         plot(rad, 'color',[.1+(count/4) .1+(count/4) .1+(count/4)]);
-        xlim([0 length(tims)]);
         ylabel('Radial');
+        box on
     end
     %     ylim([yMin yMax]);
     set(gca, 'xticklabels',[]);
@@ -59,9 +63,11 @@ if ~isempty(theTraces{2})
     ah(count) = subplot(numPlots,1,count);
     if strcmp(rotation, 'unrotated')
         plot(tims, theTraces{2}, 'Color',[.1+(count/4) .1+(count/4) .1+(count/4)]);
+        yMin = min([yMin min(theTraces{2})]);
+        yMax = max([yMax max(theTraces{2})]);
+        box on
         ylabel(sprintf('East-West (%3.0f%s)', ...
             theTrace(2).azimuth, char(176)));
-        xlim([0 length(tims)]);
     elseif strcmp(rotation, 'rotated')
         if numPlots == 3
             [~,trans,~] = myrotate(theTrace(1).station, theTrace(1).startTime,theTrace(1).location, theTrace(1).endTime, azim, 'ZRT');
@@ -70,12 +76,13 @@ if ~isempty(theTraces{2})
         elseif numPlots == 2 & contains([theTrace.channel], 'BHE')
             [~,trans,~] = myrotate(theTrace(1).station, theTrace(1).startTime, theTrace(1).location, theTrace(1).endTime, azim, 'ZT');
         end
+        yMin = min([yMin min(trans)]);
+        yMax = max([yMax max(trans)]);
         plot(trans, 'Color',[.1+(count/4) .1+(count/4) .1+(count/4)]);
-        xlim([0 length(tims)]);
+        box on
         ylabel('Transverse');
     end
     set(gca, 'xticklabels',[]);
-    %     ylim([yMin yMax]);
     hold off
     count = count + 1;
 end
@@ -84,6 +91,9 @@ if ~isempty(theTraces{3})
     ah(count) = subplot(numPlots,1,count);
     if strcmp(rotation, 'unrotated')
         plot(tims, theTraces{3}, 'Color',[.1+(count/4) .1+(count/4) .1+(count/4)]);
+        yMin = min([yMin min(theTraces{3})]);
+        yMax = max([yMax max(theTraces{3})]);
+        box on
         ylabel('Vertical');
         xlim([0 length(tims)]);
     elseif strcmp(rotation, 'rotated')
@@ -95,12 +105,18 @@ if ~isempty(theTraces{3})
             [~,~,vert] = myrotate(theTrace(1).station, theTrace(1).startTime,theTrace(1).location,  theTrace(1).endTime, azim, 'ZT');
         end
         plot(vert, 'Color',[.1+(count/4) .1+(count/4) .1+(count/4)]);
+        yMin = min([yMin min(vert)]);
+        yMax = max([yMax max(vert)]);
+        box on
         xlim([0 length(tims)]);
         ylabel('Vertical');
     end
-    %     ylim([yMin yMax]);
     set(gca, 'xtick', linspace(0, length(tims), 10), 'xtickLabel',linspace(0, elapTime, 10));
     xticklabels(linspace(0, ceil(elapTime), 10));
+    for i = 1:length(ah)
+        ah(i).XLim = [0 length(tims)];
+        ah(i).YLim = [yMin yMax];
+    end
     suplabel('Time (s)', 'x');
     hold off
     % plot and label P- and S-wave Arrivals

@@ -1,4 +1,4 @@
-function [fig,ax] = drawTopoIm(xLim, yLim)
+function [fig,ax] = drawTopoIm(xLim, yLim, alph)
 % Convert topo image to map axes for multi colorbar plotting
 % last modified 2/17/21 @aamatya
 %---------Input Variables---------------------------
@@ -20,5 +20,6 @@ ax2 = worldmap(xLim, yLim);
 fig = mapshow(img,R);
 ax = gca;
 setm(ax, 'MlabelParallel', 'south');
+alpha(alph);
 hold off
 end

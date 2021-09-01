@@ -1,0 +1,36 @@
+* **********************************
+* NETWORK   (KNETWK): II
+* STATION    (KSTNM): SACV
+* LOCATION   (KHOLE): 00
+* CHANNEL   (KCMPNM): BHN
+* CREATED           : 2021-02-21T22:28:30
+* START             : 2011-06-16T00:00:00
+* END               : 2013-01-13T23:59:59
+* DESCRIPTION       : Santiago Island, Cape Verde
+* LATITUDE          : 14.970200
+* LONGITUDE         : -23.608500
+* ELEVATION         : 387.0
+* DEPTH             : 97.0
+* DIP               : 90.0
+* AZIMUTH           : 28.6
+* SAMPLE RATE       : 20.0
+* INPUT UNIT        : M
+* OUTPUT UNIT       : COUNTS
+* INSTTYPE          : Geotech KS-54000 Borehole Seismometer
+* INSTGAIN          : 2.494920e+03 (M/S)
+* COMMENT           : 
+* SENSITIVITY       : 8.595290e+08 (M/S)
+* A0                : 2.888297e+06 
+* **********************************
+ZEROS   3
+        +0.000000e+00   +0.000000e+00
+        +0.000000e+00   +0.000000e+00
+        +0.000000e+00   +0.000000e+00
+POLES   6
+        -4.799989e-03   +0.000000e+00
+        -7.550567e-02   +0.000000e+00
+        -1.847256e+01   +1.884579e+01
+        -1.847256e+01   -1.884579e+01
+        -3.392455e+01   +0.000000e+00
+        -1.188515e+02   +0.000000e+00
+CONSTANT        2.482575e+15
